@@ -57,3 +57,27 @@ for i in range(60,len(train_data)):
 
 x_train_data,y_train_data=np.array(x_train_data),np.array(y_train_data)
 x_train_data=np.reshape(x_train_data,(x_train_data.shape[0],x_train_data.shape[1],1))
+
+#Sample the dataset
+
+X_test=[]
+for i in range (60, inputs_data.shape[0]):
+    X_test.append(inputs_data[i-60:i,0])
+X_test=np.array(X_test)
+
+X_test=np.reshape(X_test,(X_test.shape[0],X_test.shape[1],1))
+predicted_closing_price=lstm_model.predict(X_test)
+predicted_closing_price=scaler.inverse_transform(predicted_closing_price)
+
+
+#save model
+
+lstm_model.save("save_model.h5")
+
+#Visualize
+
+train_data=new_dataset[:987]
+valid_data=new_dataset[987:]
+valid_data['Predictions']=predicted_closing_price
+plt.plot(train_data["Close"])
+plt.plot(valid_data[["Close","Predictions"]])
